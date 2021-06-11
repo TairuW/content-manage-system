@@ -4,18 +4,19 @@ export async function UserRegister(userinfo){
         body: JSON.stringify(userinfo)
     })
     const data = await res.json();
-    console.log(data);
-    console.log(JSON.stringify(userinfo));
+    console.log(typeof userinfo);
+    console.log(typeof JSON.stringify(userinfo));
+    return data;
 }
 
 export async function UserLogin(userinfo){
     const res = await fetch(process.env.REACT_APP_LOGIN_API, {
-        method: 'POST',
+        method: 'GET',
+        headers: {'Content-type': 'application/json'},
         body: JSON.stringify(userinfo)
     })
     const data = await res.json();
-    console.log(data);
-    console.log(JSON.stringify(userinfo));
+    return data;
 }
 
 export async function GetCode(userinfo){
@@ -24,6 +25,5 @@ export async function GetCode(userinfo){
         body: JSON.stringify(userinfo)
     })
     const data = await res.json();
-    console.log(data);
-    console.log(JSON.stringify(userinfo));
+    return data;
 }

@@ -40,12 +40,13 @@ class Register extends React.Component {
         });
 
         UserRegister(requestData).then(response => {
-            const data = response.data;
             this.setState({
                 loading: false,
             });
-            if (data.resCode === 0) {
-                message.success(data.message);
+            if (response.resCode === 1) {
+                message.error(response.error);
+            } else if (response.resCode === 0) {
+                message.success(response.message);
                 this.toggleForm();
             }
         }).catch(err => {
