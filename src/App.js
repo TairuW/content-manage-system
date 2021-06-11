@@ -1,31 +1,26 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import { HashRouter, Switch, Route } from 'react-router-dom';
-import './App.scss';
 
-import Home from './views/Home';
-import Login from './views/Login';
+import Home from './views/Home/index';
+import System from './views/System/index';
+
+import PrivateRouter from './components/privateRouter/index';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-
-    }
+    this.state = {}
   }
 
   render() {
     return (
-      <Fragment>
-        <HashRouter>
-          <Switch>
-            <Route component={Home} exact path="/"/>
-            <Route component={Login} exact path="/login"/>
-          </Switch>
-        </HashRouter>
-
-
-      </Fragment>
+      <HashRouter>
+        <Switch>
+          <Route component={Home} exact path="/"/>
+          <PrivateRouter component={System} exact path="/system"/>
+        </Switch>
+      </HashRouter>
     )
   }
 }
