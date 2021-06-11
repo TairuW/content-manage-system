@@ -1,15 +1,15 @@
-import React, {Fragment} from 'react';
+import React, { Fragment } from 'react';
 import "./index.scss";
 
 // Ant Design
-import { Form, Input, Button, Row, Col, message} from 'antd';
-import { UserOutlined, LockOutlined, KeyOutlined} from '@ant-design/icons';
+import { Form, Input, Button, Row, Col, message } from 'antd';
+import { UserOutlined, LockOutlined, KeyOutlined } from '@ant-design/icons';
 
 // Validations
 import { validate_pin } from '../../utils/validate';
 
 // api
-// import { UserRegister } from '../../api/account';
+import { UserRegister } from '../../api/account';
 
 // Components
 import Captcha from '../../components/captcha/index';
@@ -29,17 +29,6 @@ class Register extends React.Component {
         };
     }
 
-    UserRegister = async (userinfo) => {
-        const res = await fetch('http://localhost:8000/post/', {
-            method: 'POST',
-            // body: JSON.stringify(userinfo)
-            body: [1,2,3]
-        })
-        const data = await res.json();
-        console.log(data);
-        console.log(JSON.stringify(userinfo));
-    }
-
     onFinish = (values) => {
         const requestData = {
             username: this.state.username,
@@ -50,28 +39,21 @@ class Register extends React.Component {
             loading: true,
         });
 
-        this.UserRegister(requestData).then(response => {
+        UserRegister(requestData).then(response => {
             const data = response.data;
-            message.success(data.message);
+            this.setState({
+                loading: false,
+            });
+            if (data.resCode === 0) {
+                message.success(data.message);
+                this.toggleForm();
+            }
         }).catch(err => {
             message.error("Unable to register");  
             this.setState({
                 loading: false,
             });
         })
-
-        // UserRegister(requestData).then(response => {
-        //     const data = response.data;
-        //     message.success(data.message);
-        //     if (data.resCode === 0) {
-        //         this.toggleForm();
-        //     }
-        // }).catch(error => {
-        //     message.error("Unable to register");  
-        //     this.setState({
-        //         loading: false,
-        //     });         
-        // });
     }
 
     toggleForm = () => {

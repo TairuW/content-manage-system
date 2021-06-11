@@ -3,8 +3,7 @@ import axios from 'axios';
 import { getToken, getUsername } from "./cookies";
 
 const service = axios.create({
-  // baseURL: process.env.REACT_APP_API,
-  baseURL: 'http://localhost:8080/',
+  baseURL: 'http://localhost:8000/',
   timeout: 1000,
 });
 
