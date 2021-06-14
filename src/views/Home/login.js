@@ -11,7 +11,7 @@ import { setToken, setUsername } from '../../utils/cookies';
 // api
 import { UserLogin } from '../../api/account';
 // Component
-import Captcha from '../../components/captcha/index';
+import Captcha from './components/captcha/index';
 // crypto
 import CryptoJs from 'crypto-js';
 

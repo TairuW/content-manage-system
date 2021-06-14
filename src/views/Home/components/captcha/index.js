@@ -1,9 +1,9 @@
 import React from 'react';
 // ATN Design
 import { Button, message } from 'antd';
-import { GetCode } from '../../api/account';
+import { GetCode } from '../../../../api/account';
 
-import { validate_email } from '../../utils/validate';
+import { validate_email } from '../../../../utils/validate';
 
 let timer = null;
 

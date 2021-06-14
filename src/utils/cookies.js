@@ -1,6 +1,6 @@
 import cookies from 'react-cookies';
 
-const token = "tokenAdmin";
+const token = "token";
 const username = "username";
 
 export function setToken(value){

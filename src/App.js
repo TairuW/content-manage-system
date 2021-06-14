@@ -18,7 +18,7 @@ class App extends React.Component {
       <HashRouter>
         <Switch>
           <Route component={Home} exact path="/"/>
-          <PrivateRouter component={System} exact path="/system"/>
+          <PrivateRouter component={System} path="/system"/>
         </Switch>
       </HashRouter>
     )

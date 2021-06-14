@@ -12,7 +12,7 @@ import { validate_pin } from '../../utils/validate';
 import { UserRegister } from '../../api/account';
 
 // Components
-import Captcha from '../../components/captcha/index';
+import Captcha from './components/captcha/index';
 
 // crypto
 import CryptoJs from 'crypto-js';
