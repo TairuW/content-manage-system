@@ -3,13 +3,14 @@ import React from 'react';
 // ant design
 import { Form, Input, InputNumber, Radio, Button, message } from 'antd';
 // api
-import { AddDepartment } from '../../../api/department';
+import { AddDepartment, GetDetails, UpdateDetails } from '../../../api/department';
 
 class DepartmentAdd extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
+      id: "",
       formLayout: {
         labelCol: { span: 4 },
         wrapperCol: { span: 20 },
@@ -17,6 +18,23 @@ class DepartmentAdd extends React.Component {
     };
   }
   formRef = React.createRef();
+
+  UNSAFE_componentWillMount() {
+    if (this.props.location.state) {
+      this.setState({ id: this.props.location.state.id });
+    }
+  }
+  
+  componentDidMount() {
+    this.getDetails();
+  }
+
+  getDetails = () => {
+    if(!this.props.location.state) { return false; }
+    GetDetails({_id: this.state.id}).then(response => {
+      this.formRef.current.setFieldsValue(response);
+    })
+  }
 
   onSubmit = (value) => {
     if(!value.name) {
@@ -31,6 +49,11 @@ class DepartmentAdd extends React.Component {
       loading: true,
     })
 
+    this.state.id ? this.onEdit(value) : this.onAdd(value);
+
+  }
+
+  onAdd = (value) => {
     AddDepartment(value).then(response => {
       if (response.resCode === 0) {
         message.success(response.message);
@@ -38,6 +61,26 @@ class DepartmentAdd extends React.Component {
           loading: false,
         });
         this.formRef.current.resetFields();
+      } else {
+        this.setState({
+          loading: false,
+        });
+        message.error(response.message);
+      }
+    }).catch(error => {
+      this.setState({
+          loading: false,
+      });
+    });
+  }
+
+  onEdit = (value) => {
+    UpdateDetails({id: this.state.id, data: value}).then(response => {
+      if (response.resCode === 0) {
+        message.success(response.message);
+        this.setState({
+          loading: false,
+        });
       } else {
         this.setState({
           loading: false,

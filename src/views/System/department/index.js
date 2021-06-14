@@ -1,13 +1,12 @@
 import React, { Fragment } from 'react';
-
-import "../../../styles/main.scss";
-
+import "@styles/main.scss";
+// import
+import { Link } from 'react-router-dom';
+// antd
 import { Table, Input, Space, Switch, Button, Modal, message } from 'antd';
-
 import { AudioOutlined } from '@ant-design/icons';
-
 // api 
-import { ListDepartment, DeleteDepartment } from '../../../api/department';
+import { ListDepartment, DeleteDepartment, UpdateStatus } from '@api/department';
 
 const { Search } = Input;
 
@@ -20,6 +19,8 @@ class DepartmentIndex extends React.Component {
       pageNumber: 1,
       pageSize: 10,
       visible: false,
+      confirmLoading: false,
+      id: "",
       data: [],
       columns: [
         {title:"Department Name", dataIndex:"name", key:"name"},
@@ -29,7 +30,7 @@ class DepartmentIndex extends React.Component {
           dataIndex:"status",
           key:"status",
           render: (text, rowData) => {
-            return <Switch checkedChildren="Enable" unCheckedChildren="Disable" defaultChecked={rowData.status}/>
+            return <Switch onChange={() => this.onHandleSwitch(rowData._id, !rowData.status)} checkedChildren="Enable" unCheckedChildren="Disable" defaultChecked={rowData.status}/>
           },
         },
         {
@@ -40,7 +41,9 @@ class DepartmentIndex extends React.Component {
           render: (text, rowData) => {
             return (
               <div className="inline-button">
-                <Button type="primary" onClick={this.showModal}>Modify</Button>
+                <Button type="primary" onClick={() => this.onHandleEdit(rowData._id)}>
+                  <Link to={{pathname: './add', state: {id: rowData._id}}}>Edit</Link>
+                </Button>
                 <Button onClick={() => this.onHandleDelete(rowData._id)}>Delete</Button>
               </div>
             )
@@ -83,25 +86,41 @@ class DepartmentIndex extends React.Component {
   onSelectChange = () => {
   }
 
-  onHandleDelete(id) {
-    console.log(id);
-    if(!id) { return false; }
-    DeleteDepartment({id}).then(response => {
-      if (response.resCode === 0){
-        message.success(response.message);
-        this.LoadData();
-      }
-    }).catch(error => {
+  onHandleSwitch(_id, status) {
+    if(!_id) { return false; }
+    console.log(_id+" "+status);
+    UpdateStatus({_id, status}).then(response => {
+      message.success(response.message);
+      this.LoadData();
+    })
+  }
+  onHandleEdit(id) {
 
+  }
+
+  onHandleDelete(id) {
+    if(!id) { return false; }
+    this.setState({ 
+      visible: true,
+      id,
     })
   }
 
-  showModal = () => {
-    this.setState({visible: true})
-  }
-
   handleOk = () => {
-    this.setState({visible: false})
+    this.setState({ confirmLoading: true });
+    DeleteDepartment({id: this.state.id}).then(response => {
+      if (response.resCode === 0){
+        message.success(response.message);
+        this.setState({
+          visible: false,
+          confirmLoading: false,
+          id: ""
+        })
+        this.LoadData();
+      }
+    }).catch(error => {
+      message.error("Failed to delete");
+    })
   }
 
   handleCancel = () => {
@@ -109,7 +128,7 @@ class DepartmentIndex extends React.Component {
   }
 
   render() {
-    const {data, columns} = this.state;
+    const {data, columns, visible, confirmLoading} = this.state;
     const rowSelection = {
       onChange: this.onSelectChange
     };
@@ -131,14 +150,15 @@ class DepartmentIndex extends React.Component {
         columns={columns}
         />
         <Modal 
-        title="Basic Modal" 
-        visible={this.state.visible} 
+        title="Info" 
+        visible={visible} 
         onOk={this.handleOk} 
+        confirmLoading={confirmLoading}
         onCancel={this.handleCancel}
         okText="Confirm"
         cancelText="Cancel"
         >
-          <p>Some contents...</p>
+          <p>Are you sure you want to delete this?</p>
         </Modal>
       </Fragment>
        
