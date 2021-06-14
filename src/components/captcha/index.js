@@ -51,7 +51,7 @@ class Captcha extends React.Component {
             module: this.state.module,
         }
         GetCode(requestData).then(response => {
-            message.success(response.data.message);
+            message.success("Your verification code: " + response.captcha);
             this.countDown();
         }).catch(error => {
             message.error('Captcha unsent');

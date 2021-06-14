@@ -27,25 +27,6 @@ class Login extends React.Component {
         };
     }
 
-    componentDidMount() {
-        // this.getUserInfo();
-    }
-
-    getUserInfo = async () => {
-        const res = await fetch('http://localhost:8000/post')
-        const data = await res.json();
-        console.log(data);
-    }
-
-    LoginInfo = async (user) => {
-        const res = await fetch('http://localhost:8000/post', {
-            method: 'POST',
-            body: JSON.stringify(user)
-        })
-        const data = await res.json();
-        console.log(data);
-    }
-
     onFinish = (values) => {
         const requestData = {
             username: this.state.username,
@@ -56,19 +37,23 @@ class Login extends React.Component {
             loading: true,
         });
 
-        this.props.history.push('/system');
-
         UserLogin(requestData).then(response => {
-            message.success(response.data.message);
-            this.setState({
-                loading: false,
-            });
-            const data = response.data.data;
-            // save token and username
-            setToken(data.token);
-            setUsername(data.username);
-            // reroute
-            // this.props.history.push('/index');
+            if (response.resCode === 0) {
+                message.success(response.message);
+                this.setState({
+                    loading: false,
+                });
+                // save token and username into Cookies
+                setUsername(requestData.username);
+                setToken(requestData.password);
+                // reroute
+                this.props.history.push('/system');
+            } else {
+                this.setState({
+                    loading: false,
+                });
+                message.error(response.message);
+            }
         }).catch(error => {
             this.setState({
                 loading: false,

@@ -44,7 +44,7 @@ class Register extends React.Component {
                 loading: false,
             });
             if (response.resCode === 1) {
-                message.error(response.error);
+                message.error(response.message);
             } else if (response.resCode === 0) {
                 message.success(response.message);
                 this.toggleForm();
