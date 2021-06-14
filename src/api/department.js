@@ -1,0 +1,27 @@
+export async function AddDepartment(info){
+    const res = await fetch("http://localhost:8000/department/", {
+        method: 'POST',
+        headers: {'Content-type': 'application/json'},
+        body: JSON.stringify(info)
+    })
+    const data = await res.json();
+    return data;
+}
+
+export async function ListDepartment(){
+    const res = await fetch("http://localhost:8000/department/", {
+        method: 'GET',
+    })
+    const data = await res.json();
+    return data;
+}
+
+export async function DeleteDepartment(id){
+    const res = await fetch("http://localhost:8000/department/delete/", {
+        method: 'POST',
+        headers: {'Content-type': 'application/json'},
+        body: JSON.stringify(id)
+    })
+    const data = await res.json();
+    return data;
+}

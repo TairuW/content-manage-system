@@ -26,7 +26,7 @@ class AsideMenu extends  React.Component{
         this.selectMenuHighlight(menuHighlight);
     }
 
-    selectMenu = ({key, keyPath}) =>{
+    selectMenu = ({key, keyPath}) => {
         const menuHighlight = {
             selectedKeys: [key],
             openKeys: [keyPath[keyPath.length-1]],

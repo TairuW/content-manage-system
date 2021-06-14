@@ -3,7 +3,8 @@ import React from 'react';
 // ant design
 import { Form, Input, InputNumber, Radio, Button, message } from 'antd';
 // api
-// import { DepartmentAdd_api } from '../../../api/department';
+import { AddDepartment } from '../../../api/department';
+
 class DepartmentAdd extends React.Component {
   constructor(props) {
     super(props);
@@ -29,17 +30,25 @@ class DepartmentAdd extends React.Component {
     this.setState({
       loading: true,
     })
-    // DepartmentAdd_api(value).then(response => {
-    //   message.success(response.data.message);
-    //   this.setState({
-    //     loading: false,
-    //   });
-    //   this.formRef.current.resetFields();
-    // }).catch(error => {
-    //   this.setState({
-    //       loading: false,
-    //   });
-    // });
+
+    AddDepartment(value).then(response => {
+      if (response.resCode === 0) {
+        message.success(response.message);
+        this.setState({
+          loading: false,
+        });
+        this.formRef.current.resetFields();
+      } else {
+        this.setState({
+          loading: false,
+        });
+        message.error(response.message);
+      }
+    }).catch(error => {
+      this.setState({
+          loading: false,
+      });
+    });
   }
 
   onReset = () => {

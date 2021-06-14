@@ -15,7 +15,6 @@ export async function UserLogin(userinfo){
         body: JSON.stringify(userinfo)
     })
     const data = await res.json();
-    console.log(data);
     return data;
 }
 

@@ -2,12 +2,12 @@ import React, { Fragment } from 'react';
 
 import "../../../styles/main.scss";
 
-import { Table, Input, Space, Switch, Button } from 'antd';
+import { Table, Input, Space, Switch, Button, Modal, message } from 'antd';
 
 import { AudioOutlined } from '@ant-design/icons';
 
 // api 
-// import { getList } from '../../../api/department';
+import { ListDepartment, DeleteDepartment } from '../../../api/department';
 
 const { Search } = Input;
 
@@ -19,24 +19,8 @@ class DepartmentIndex extends React.Component {
       // config
       pageNumber: 1,
       pageSize: 10,
-      // Table content
-      data: [
-        {
-          name: '1',
-          number: 32,
-          status: false
-        },
-        {
-          name: '2',
-          number: 42,
-          status: false
-        },
-        {
-          name: '3',
-          number: 32,
-          status: true
-        },
-      ],
+      visible: false,
+      data: [],
       columns: [
         {title:"Department Name", dataIndex:"name", key:"name"},
         {title:"Population", dataIndex:"number", key:"number"},
@@ -56,8 +40,8 @@ class DepartmentIndex extends React.Component {
           render: (text, rowData) => {
             return (
               <div className="inline-button">
-                <Button type="primary">Modify</Button>
-                <Button>Delete</Button>
+                <Button type="primary" onClick={this.showModal}>Modify</Button>
+                <Button onClick={() => this.onHandleDelete(rowData._id)}>Delete</Button>
               </div>
             )
           }
@@ -68,6 +52,7 @@ class DepartmentIndex extends React.Component {
   componentDidMount() {
     this.LoadData();
   }
+
   LoadData = () => {
     const {pageNumber, pageSize, keyword} = this.state;
     const requestData = {
@@ -79,12 +64,11 @@ class DepartmentIndex extends React.Component {
       requestData.name = keyword;
     }
 
-    // getList(requestData).then(response =>{
-    //   const responseData = response.data.data
-    //   if (responseData) {
-    //     this.setState({data: response.data})
-    //   }
-    // })
+    ListDepartment(requestData).then(response =>{
+      if (response) {
+        this.setState({data: response})
+      }
+    })
   }
 
   onSearch = (value) => {
@@ -95,8 +79,33 @@ class DepartmentIndex extends React.Component {
     })
     this.LoadData();
   }
+
   onSelectChange = () => {
-    console.log("okay");
+  }
+
+  onHandleDelete(id) {
+    console.log(id);
+    if(!id) { return false; }
+    DeleteDepartment({id}).then(response => {
+      if (response.resCode === 0){
+        message.success(response.message);
+        this.LoadData();
+      }
+    }).catch(error => {
+
+    })
+  }
+
+  showModal = () => {
+    this.setState({visible: true})
+  }
+
+  handleOk = () => {
+    this.setState({visible: false})
+  }
+
+  handleCancel = () => {
+    this.setState({visible: false})
   }
 
   render() {
@@ -121,6 +130,16 @@ class DepartmentIndex extends React.Component {
         dataSource={data}
         columns={columns}
         />
+        <Modal 
+        title="Basic Modal" 
+        visible={this.state.visible} 
+        onOk={this.handleOk} 
+        onCancel={this.handleCancel}
+        okText="Confirm"
+        cancelText="Cancel"
+        >
+          <p>Some contents...</p>
+        </Modal>
       </Fragment>
        
     )
