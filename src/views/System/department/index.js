@@ -7,17 +7,19 @@ import { Table, Input, Space, Switch, Button, Modal, message } from 'antd';
 import { AudioOutlined } from '@ant-design/icons';
 // api 
 import { ListDepartment, DeleteDepartment, UpdateStatus } from '@api/department';
-
+// component
+import TableComponent from '../components/tableData/index';
 const { Search } = Input;
 
 class DepartmentIndex extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      // Table
       keyword: "",
-      // config
       pageNumber: 1,
       pageSize: 10,
+      // Modal
       visible: false,
       confirmLoading: false,
       id: "",
@@ -41,7 +43,7 @@ class DepartmentIndex extends React.Component {
           render: (text, rowData) => {
             return (
               <div className="inline-button">
-                <Button type="primary" onClick={() => this.onHandleEdit(rowData._id)}>
+                <Button type="primary">
                   <Link to={{pathname: './add', state: {id: rowData._id}}}>Edit</Link>
                 </Button>
                 <Button onClick={() => this.onHandleDelete(rowData._id)}>Delete</Button>
@@ -57,17 +59,7 @@ class DepartmentIndex extends React.Component {
   }
 
   LoadData = () => {
-    const {pageNumber, pageSize, keyword} = this.state;
-    const requestData = {
-      pageNumber,
-      pageSize,
-    }
-
-    if (keyword) {
-      requestData.name = keyword;
-    }
-
-    ListDepartment(requestData).then(response =>{
+    ListDepartment().then(response =>{
       if (response) {
         this.setState({data: response})
       }
@@ -88,14 +80,12 @@ class DepartmentIndex extends React.Component {
 
   onHandleSwitch(_id, status) {
     if(!_id) { return false; }
-    console.log(_id+" "+status);
     UpdateStatus({_id, status}).then(response => {
       message.success(response.message);
       this.LoadData();
+    }).catch(error => {
+      console.error(error);
     })
-  }
-  onHandleEdit(id) {
-
   }
 
   onHandleDelete(id) {
@@ -143,6 +133,7 @@ class DepartmentIndex extends React.Component {
           onSearch={this.onSearch}
           />
         </Space>
+        <TableComponent columns={columns}/>
         <Table 
         rowSelection={rowSelection}
         rowKey="name" 
